@@ -1,0 +1,20 @@
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=schema_order
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        show_sql: true
+    open-in-view: false
+
+feign:
+  client:
+    zipCode:
+      url: ${ZIP_CODE_URL:http://localhost:3001/cep}

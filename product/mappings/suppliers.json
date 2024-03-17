@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/suppliers/65f7572a1f0faf2c4986230b"
+  },
+  "response": {
+    "fixedDelayMilliseconds": "500",
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "name": "Magazine",
+        "company": "Magazine Luiza"
+      }
+    ]
+  }
+}

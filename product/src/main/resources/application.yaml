@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: product
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      authentication-database: admin
+      username: root
+      password: root
+      database: product
+
+client:
+  supplier:
+    url: http://localhost:8082
+
+resilience4j.circuitbreaker:
+  instances:
+    suppliers:
+      slidingWindowSize: 8
+      minimumNumberOfCalls: 4
+#      slowCallDurationThreshold: 1000
+#      slowCallRateThreshold: 50
+#      permittedNumberOfCallsInHalfOpenState: 2
+#      waitDurationInOpenState: 10000
+
