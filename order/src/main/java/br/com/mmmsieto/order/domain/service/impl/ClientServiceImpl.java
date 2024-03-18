@@ -8,7 +8,6 @@ import br.com.mmmsieto.order.infrastructure.feign.SearchZipCodeClient;
 import br.com.mmmsieto.order.infrastructure.redis.AddressEntityRedisRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
