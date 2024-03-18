@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  oracle-db:
+    image: gvenzl/oracle-xe:21-slim
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    environment:
+      - ORACLE_PASSWORD=your_password
+      - ORACLE_DATABASE=your_database
+      - APP_USER=your_app_user
+      - APP_USER_PASSWORD=your_app_user_password
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "sqlplus", "-S", "system/your_password@//localhost:1521/your_database", "AS", "SYSDBA", "EXIT"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  oracle-data:

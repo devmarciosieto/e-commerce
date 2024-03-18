@@ -5,12 +5,15 @@ import br.com.mmmsieto.order.app.v1.controller.dtos.ClientAddressEntity;
 import br.com.mmmsieto.order.app.v1.controller.dtos.ClientEntity;
 import br.com.mmmsieto.order.domain.service.ClientService;
 import br.com.mmmsieto.order.infrastructure.feign.SearchZipCodeClient;
+import br.com.mmmsieto.order.infrastructure.redis.AddressEntityRedisRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
@@ -20,11 +23,14 @@ public class ClientServiceImpl implements ClientService {
 
     private final TaskExecutor taskExecutor;
     private final SearchZipCodeClient zipCode;
+    private final AddressEntityRedisRepository addressEntityRedisRepository;
 
     public ClientServiceImpl(@Qualifier("applicationTaskExecutor") TaskExecutor taskExecutor,
-                                SearchZipCodeClient zipCode) {
+                                SearchZipCodeClient zipCode,
+                                AddressEntityRedisRepository addressEntityRedisRepository) {
         this.taskExecutor = taskExecutor;
         this.zipCode = zipCode;
+        this.addressEntityRedisRepository = addressEntityRedisRepository;
     }
 
     @Override
@@ -109,7 +115,16 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientAddressEntity getClientAddress(ClientEntity clientEntity) {
 
-        AddressEntity addressEntity = zipCode.buscaCep(clientEntity.getCep());
+        String cep = clientEntity.getCep();
+        Optional<AddressEntity> addressEntityOptional = addressEntityRedisRepository.findById(cep);
+        AddressEntity addressEntity;
+
+        if (addressEntityOptional.isPresent()) {
+                addressEntity = addressEntityOptional.get();
+        } else {
+            addressEntity = zipCode.buscaCep(cep);
+            addressEntityRedisRepository.save(addressEntity);
+        }
 
         ClientAddressEntity clientAddressEntity = new ClientAddressEntity();
         clientAddressEntity.setId(clientEntity.getId());

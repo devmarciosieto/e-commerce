@@ -1,7 +1,13 @@
 package br.com.mmmsieto.order.app.v1.controller.dtos;
 
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+
+@RedisHash(value = "AddressEntity", timeToLive = 300)
 public class AddressEntity {
 
+    @Id
     private String cep;
     private String logradouro;
     private String complemento;
